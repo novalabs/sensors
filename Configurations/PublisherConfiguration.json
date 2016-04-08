@@ -1,0 +1,13 @@
+{
+  "name": "PublisherConfiguration",
+  "description": "Sensor Publisher node configuration",
+  "namespace": "sensors",
+  "fields": [
+    {
+      "name": "topic",
+      "description": "Name of the topic to publish to",
+      "type": "CHAR",
+      "size": 16
+    }
+  ]
+}

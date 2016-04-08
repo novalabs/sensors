@@ -1,0 +1,10 @@
+{
+  "name": "sensors",
+  "namespace": "@",
+  "description": "Sensors",
+  "sources": [
+    "L3GD20H.cpp",
+    "LSM303D.cpp",
+    "QEI.cpp"
+  ]
+}
