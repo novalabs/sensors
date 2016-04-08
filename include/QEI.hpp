@@ -57,6 +57,9 @@ public:
 		bool
 		waitUntilReady();
 
+		bool
+		update();
+
 		void
 		get(
 				DataType& data

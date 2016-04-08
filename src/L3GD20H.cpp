@@ -204,6 +204,8 @@ namespace sensors {
 		_data.x = tmp[0];
 		_data.y = tmp[1];
 		_data.z = tmp[2];
+
+		return true;
 	} // l3gd20h::update
 
 	void

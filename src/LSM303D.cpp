@@ -278,6 +278,8 @@ namespace sensors {
 		_data.x = tmp[0] >> 4;
 		_data.y = tmp[1] >> 4;
 		_data.z = tmp[2] >> 4;
+
+		return true;
 	} // lsm303d::update
 
 	void
@@ -360,6 +362,8 @@ namespace sensors {
 		_data.x = tmp[0] >> 4;
 		_data.y = tmp[1] >> 4;
 		_data.z = tmp[2] >> 4;
+
+		return true;
 	} // lsm303d::update
 
 	void

@@ -57,6 +57,12 @@ namespace sensors {
 		return true;
 	}
 
+	bool
+	QEI_Delta::update()
+	{
+		return true;
+	} // QEI_Delta::update
+
 	void
 	QEI_Delta::get(
 			DataType& data
