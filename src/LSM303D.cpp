@@ -202,8 +202,10 @@ namespace sensors {
 		writeRegister(LSM303D_CTRL5, 0xF4); // Temp sensor enabled, magnetometer high-res, Mag 100Hz
 		writeRegister(LSM303D_CTRL6, 0x00); // Mag FS ±2 gauss
 		writeRegister(LSM303D_CTRL7, 0x00);
-		writeRegister(LSM303D_CTRL1, 0x6F); // Acc 100Hz, axes enabled, no data update until MSB and LSB read
+		writeRegister(LSM303D_CTRL1, 0x67); // Acc 100Hz, axes enabled, no data update until MSB and LSB read
 		_spi.releaseBus();
+
+		Core::MW::Thread::sleep(Core::MW::Time::ms(250));
 
 		return true;
 	} // lsm303d::init

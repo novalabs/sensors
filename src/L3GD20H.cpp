@@ -78,6 +78,8 @@ namespace sensors {
 		writeRegister(L3GD20H_CTRL5, 0x00);
 		_spi.releaseBus();
 
+		Core::MW::Thread::sleep(Core::MW::Time::ms(250));
+
 		return true;
 	} // l3gd20h::init
 
@@ -103,6 +105,7 @@ namespace sensors {
 	L3GD20H_Gyro::start()
 	{
 		_device._ext.enable();
+		update();
 
 		return true;
 	}
@@ -188,16 +191,16 @@ namespace sensors {
 	bool
 	L3GD20H_Gyro::update()
 	{
-		int16_t tmp[3];
+		uint8_t  txbuf;
+		uint8_t  rxbuf[6];
+		int16_t* tmp = (int16_t*)(&rxbuf[0]);
 
-		//XXX da fare lettura sequenziale!
+		txbuf = 0x80 | 0x40 | L3GD20H_OUT_X_L;
 		_device._spi.acquireBus();
-		tmp[0]  = (_device.readRegister(L3GD20H_OUT_X_H) & 0xFF) << 8;
-		tmp[0] |= _device.readRegister(L3GD20H_OUT_X_L) & 0xFF;
-		tmp[1]  = (_device.readRegister(L3GD20H_OUT_Y_H) & 0xFF) << 8;
-		tmp[1] |= _device.readRegister(L3GD20H_OUT_Y_L) & 0xFF;
-		tmp[2]  = (_device.readRegister(L3GD20H_OUT_Z_H) & 0xFF) << 8;
-		tmp[2] |= _device.readRegister(L3GD20H_OUT_Z_L) & 0xFF;
+		_device._spi.select();
+		_device._spi.send(1, &txbuf);
+		_device._spi.receive(6, &rxbuf);
+		_device._spi.deselect();
 		_device._spi.releaseBus();
 
 		//data.t = _timestamp; // TODO: Fix
