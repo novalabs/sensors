@@ -1,3 +1,9 @@
+/* COPYRIGHT (c) 2016 Nova Labs SRL
+ *
+ * All rights reserved. All use of this software and documentation is
+ * subject to the License Agreement located in the file LICENSE.
+ */
+
 #include <Core/MW/Publisher.hpp>
 #include <Core/MW/CoreNode.hpp>
 #include <Core/MW/CoreSensor.hpp>
@@ -62,105 +68,105 @@
  * */
 
 namespace sensors {
-	template <class _DATATYPE, class _MESSAGETYPE>
-	struct Passthru {
-		static inline void
-		_(
-				const _DATATYPE& from,
-				_MESSAGETYPE*    to
-		)
-		{
-			* to = from;
-		}
-	};
+   template <class _DATATYPE, class _MESSAGETYPE>
+   struct Passthru {
+      static inline void
+      _(
+         const _DATATYPE& from,
+         _MESSAGETYPE*    to
+      )
+      {
+         * to = from;
+      }
+   };
 
-	template <class _DATATYPE, class _MESSAGETYPE = _DATATYPE, class _CONVERTER = Passthru<_DATATYPE, _MESSAGETYPE> >
-	class Publisher:
-		public Core::MW::CoreNode
-	{
+   template <class _DATATYPE, class _MESSAGETYPE = _DATATYPE, class _CONVERTER = Passthru<_DATATYPE, _MESSAGETYPE> >
+   class Publisher:
+      public Core::MW::CoreNode
+   {
 public:
-		using DataType    = _DATATYPE;
-		using MessageType = _MESSAGETYPE;
-		using Converter   = _CONVERTER;
-
-public:
-		Publisher(
-				const char*                     name,
-				Core::MW::CoreSensor<DataType>& sensor,
-				Core::MW::Thread::PriorityEnum  priority = Core::MW::Thread::PriorityEnum::NORMAL
-		) :
-			CoreNode::CoreNode(name, priority),
-			_sensor(sensor)
-		{
-			_workingAreaSize = 256;
-		}
-
-		virtual
-		~Publisher()
-		{
-			teardown();
-		}
+      using DataType    = _DATATYPE;
+      using MessageType = _MESSAGETYPE;
+      using Converter   = _CONVERTER;
 
 public:
-		PublisherConfiguration configuration;
+      Publisher(
+         const char*                     name,
+         Core::MW::CoreSensor<DataType>& sensor,
+         Core::MW::Thread::PriorityEnum  priority = Core::MW::Thread::PriorityEnum::NORMAL
+      ) :
+         CoreNode::CoreNode(name, priority),
+         _sensor(sensor)
+      {
+         _workingAreaSize = 256;
+      }
+
+      virtual
+      ~Publisher()
+      {
+         teardown();
+      }
+
+public:
+      PublisherConfiguration configuration;
 
 private:
-		Core::MW::Publisher<MessageType> _publisher;
-		Core::MW::CoreSensor<DataType>&  _sensor;
+      Core::MW::Publisher<MessageType> _publisher;
+      Core::MW::CoreSensor<DataType>&  _sensor;
 
 private:
-		bool
-		onPrepareMW()
-		{
-			this->advertise(_publisher, configuration.topic);
+      bool
+      onPrepareMW()
+      {
+         this->advertise(_publisher, configuration.topic);
 
-			return true;
-		}
+         return true;
+      }
 
-		bool
-		onPrepareHW()
-		{
-			return _sensor.init();
-		}
+      bool
+      onPrepareHW()
+      {
+         return _sensor.init();
+      }
 
-		bool
-		onStart()
-		{
-			bool ret = _sensor.start();
+      bool
+      onStart()
+      {
+         bool ret = _sensor.start();
 
-			_sensor.update();
+         _sensor.update();
 
-			return ret;
-		}
+         return ret;
+      }
 
-		bool
-		onLoop()
-		{
-			MessageType* msgp;
-			DataType     tmp;
+      bool
+      onLoop()
+      {
+         MessageType* msgp;
+         DataType     tmp;
 
-			if (_sensor.waitUntilReady()) {
-				_sensor.update();
-				_sensor.get(tmp);
-			}
+         if (_sensor.waitUntilReady()) {
+            _sensor.update();
+            _sensor.get(tmp);
+         }
 
-			if (_publisher.alloc(msgp)) {
-				Converter::_(tmp, msgp);
+         if (_publisher.alloc(msgp)) {
+            Converter::_(tmp, msgp);
 
-				if (!_publisher.publish(*msgp)) {
-					return false;
-				}
-			} else {
-				Core::MW::Thread::sleep(Configuration::PUBLISHER_RETRY_DELAY);
-			}
+            if (!_publisher.publish(*msgp)) {
+               return false;
+            }
+         } else {
+            Core::MW::Thread::sleep(Configuration::PUBLISHER_RETRY_DELAY);
+         }
 
-			return true;
-		} // onLoop
+         return true;
+      } // onLoop
 
-		bool
-		onStop()
-		{
-			return _sensor.stop();
-		}
-	};
+      bool
+      onStop()
+      {
+         return _sensor.stop();
+      }
+   };
 }
