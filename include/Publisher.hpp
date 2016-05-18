@@ -134,7 +134,6 @@ private:
       {
          bool ret = _sensor.start();
 
-         _sensor.update();
 
          return ret;
       }
@@ -156,8 +155,6 @@ private:
             if (!_publisher.publish(*msgp)) {
                return false;
             }
-         } else {
-            Core::MW::Thread::sleep(Configuration::PUBLISHER_RETRY_DELAY);
          }
 
          return true;
