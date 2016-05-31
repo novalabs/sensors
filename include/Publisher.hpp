@@ -93,7 +93,7 @@ public:
       Publisher(
          const char*                     name,
          Core::MW::CoreSensor<DataType>& sensor,
-         Core::MW::Thread::PriorityEnum  priority = Core::MW::Thread::PriorityEnum::NORMAL
+         Core::MW::Thread::Priority priority = Core::MW::Thread::PriorityEnum::NORMAL
       ) :
          CoreNode::CoreNode(name, priority),
          _sensor(sensor)
