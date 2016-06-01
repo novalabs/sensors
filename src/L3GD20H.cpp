@@ -203,14 +203,13 @@ namespace sensors {
 
       txbuf = 0x80 | 0x40 | L3GD20H_OUT_X_L;
       _device._spi.acquireBus();
-      _device._spi.acquireBus();
       _device._spi.select();
       _device._spi.send(1, &txbuf);
       _device._spi.receive(6, &rxbuf);
       _device._spi.deselect();
       _device._spi.releaseBus();
 
-      //data.t = _timestamp; // TODO: Fix
+      //data.t = _timestamp; // TODO: Fixs
       _data.x = tmp[0];
       _data.y = tmp[1];
       _data.z = tmp[2];
